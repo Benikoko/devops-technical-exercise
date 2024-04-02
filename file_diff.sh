@@ -11,7 +11,8 @@ mkdir -p "$added_directory"
 mkdir -p "$removed_directory"
 
 # Read file_diff.txt line by line
-while IFS= read -r line; do
+while IFS= read -r line
+do
     # Extract status and file name
     status=$(echo "$line" | awk '{print $1}')
     file_name=$(echo "$line" | awk '{print $2}')
@@ -29,4 +30,4 @@ while IFS= read -r line; do
         cp "$file_name" "$removed_directory"
         echo "Moved $file_name to removed directory."
     fi
-done < "$file_diff"
+done < "$file_diff"IFS
