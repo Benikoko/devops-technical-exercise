@@ -4,7 +4,11 @@
 current_directory=$(pwd)
 added_directory="$current_directory/deployPackage/added"
 removed_directory="$current_directory/deployPackage/removed"
-file_diff="file_diff.txt"
+file_diff="$current_directory/file_diff.txt"
+objects_directory="$current_directory/src/objects"
+profiles_directory="$current_directory/src/profiles"
+reports_directory="$current_directory/src/reports"
+
 
 # Create added and removed directories if they don't exist
 mkdir -p "$added_directory"
@@ -23,11 +27,15 @@ do
     # Move/copy files based on status
     if [ "$status" = "M" ] || [ "$status" = "A" ]; then
         # Move/copy to added directory
-        cp "$file_name" "$added_directory"
+        cp "$objects_directory/$file_name" "$added_directory"
+        cp "$profiles_directory/$file_name" "$added_directory"
+        cp "$reports_directory/$file_name" "$added_directory"
         echo "Moved $file_name to added directory."
     elif [ "$status" = "R" ] || [ "$status" = "D" ]; then
         # Move/copy to removed directory
-        cp "$file_name" "$removed_directory"
+        cp "$objects_directory/$file_name" "$removed_directory"
+        cp "$profiles_directory/$file_name" "$added_directory"
+        cp "$reports_directory/$file_name" "$added_directory"
         echo "Moved $file_name to removed directory."
     fi
-done < "$file_diff"IFS
+done < "$file_diff"
