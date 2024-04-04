@@ -24,67 +24,25 @@ do
     # Extract file name without path
     file_name=$(basename "$file_name")
 
+     # Determine the directory based on the file name
+    directory=""
+    case $file_name in
+        *.object) directory="$objects_directory" ;;
+        *.profile) directory="$profiles_directory" ;;
+        *.report) directory="$reports_directory" ;;
+        *) echo "Unknown file type: $file_name"; continue ;;
+    esac
+
     # Move/copy files based on status
     if [ "$status" = "M" ] || [ "$status" = "A" ]; then
-      case $status in
-        # Move/copy to added directory
-        Objects)
-        if [ ! -d "${objects_directory}/${file_name}" ]; then
-          cp "$objects_directory/$file_name" "$added_directory" 
-        else
-          :
+        if [ -f "${directory}/${file_name}" ]; then
+            cp "${directory}/${file_name}" "$added_directory"
+            echo "Moved $file_name to added directory."
         fi
-        ;;
-        
-        Profiles)
-        if [ ! -d "${profiles_directory}/${file_name}" ]; then
-          cp "$profiles_directory/$file_name" "$added_directory"
-        else
-          :
-        fi
-        ;;
-        
-        Reports)
-        if [ ! -d "${reports_directory}/${file_name}" ]; then
-          cp "$reports_directory/$file_name" "$added_directory"
-        else
-          :
-        fi
-        ;;
-      
-      esac  
-      echo "Moved $file_name to added directory."
-      
     elif [ "$status" = "R" ] || [ "$status" = "D" ]; then
-      case $status in
-        # Move/copy to removed directory
-        Objects)
-        if [ ! -d "${objects_directory}/${file_name}" ]; then
-          cp "$objects_directory/$file_name" "$removed_directory"
-        else
-          :
+        if [ -f "${directory}/${file_name}" ]; then
+            cp "${directory}/${file_name}" "$removed_directory"
+            echo "Moved $file_name to removed directory."
         fi
-        ;;
-        
-        Profiles)
-        if [ ! -d "${profiles_directory}/${file_name}" ]; then
-          cp "$profiles_directory/$file_name" "$added_directory"
-        else
-          :
-        fi
-        ;;
-        
-        Reports)
-        if [ ! -d "${profiles_directory}/${file_name}" ]; then
-          cp "$reports_directory/$file_name" "$added_directory"
-        else
-          :
-        fi
-        ;;
-        
-      esac
-      echo "Moved $file_name to removed directory."
-      
     fi
-    
 done < "$file_diff"
