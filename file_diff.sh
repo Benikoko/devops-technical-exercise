@@ -26,16 +26,65 @@ do
 
     # Move/copy files based on status
     if [ "$status" = "M" ] || [ "$status" = "A" ]; then
+      case $status in
         # Move/copy to added directory
-        cp "$objects_directory/$file_name" "$added_directory"
-        cp "$profiles_directory/$file_name" "$added_directory"
-        cp "$reports_directory/$file_name" "$added_directory"
-        echo "Moved $file_name to added directory."
+        Objects)
+        if [ ! -d "${objects_directory}/${file_name}" ]; then
+          cp "$objects_directory/$file_name" "$added_directory" 
+        else
+          :
+        fi
+        ;;
+        
+        Profiles)
+        if [ ! -d "${profiles_directory}/${file_name}" ]; then
+          cp "$profiles_directory/$file_name" "$added_directory"
+        else
+          :
+        fi
+        ;;
+        
+        Reports)
+        if [ ! -d "${reports_directory}/${file_name}" ]; then
+          cp "$reports_directory/$file_name" "$added_directory"
+        else
+          :
+        fi
+        ;;
+      
+      esac  
+      echo "Moved $file_name to added directory."
+      
     elif [ "$status" = "R" ] || [ "$status" = "D" ]; then
+      case $status in
         # Move/copy to removed directory
-        cp "$objects_directory/$file_name" "$removed_directory"
-        cp "$profiles_directory/$file_name" "$added_directory"
-        cp "$reports_directory/$file_name" "$added_directory"
-        echo "Moved $file_name to removed directory."
+        Objects)
+        if [ ! -d "${objects_directory}/${file_name}" ]; then
+          cp "$objects_directory/$file_name" "$removed_directory"
+        else
+          :
+        fi
+        ;;
+        
+        Profiles)
+        if [ ! -d "${profiles_directory}/${file_name}" ]; then
+          cp "$profiles_directory/$file_name" "$added_directory"
+        else
+          :
+        fi
+        ;;
+        
+        Reports)
+        if [ ! -d "${profiles_directory}/${file_name}" ]; then
+          cp "$reports_directory/$file_name" "$added_directory"
+        else
+          :
+        fi
+        ;;
+        
+      esac
+      echo "Moved $file_name to removed directory."
+      
     fi
+    
 done < "$file_diff"
